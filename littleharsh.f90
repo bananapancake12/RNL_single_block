@@ -220,7 +220,7 @@ nextqt = floor(t*10d0)/10d0+0.1d0
 
   ! MAIN LOOP 
   !do while (t<maxt) ! This is the original condition
-  do while (t<maxt .AND. iter <5)
+  do while (t<maxt .AND. iter <2)
     ! Runge-Kutta substeps
     do kRK = 1,3
       ! Build     linear terms of right-hand-side of Navier-Stokes equation

@@ -104,19 +104,19 @@ subroutine start(myid,status,ierr)
     !   c: index of the last element of the second band. c+1 is the symmetric point of b
     !   d: index of the last element of the third  band. d+1 is the wall and the symmetric point of a 
 
-    allocate(Ngal(4,0:top_domain+1))
+    allocate(Ngal(4,0:nband+1))
     Ngal = 0
     ! grid points in the 'x' direction
-    read(40,20) Ngal(1,top_domain)
+    read(40,20) Ngal(1,nband)
     read(40,20)
 
     ! grid points in the 'z' direction
-    read(40,20) Ngal(2,top_domain)
+    read(40,20) Ngal(2,nband)
     read(40,20)
 
     ! grid points in the 'y' direction from 'y=-1' to 'y=1'
-    read(40,20) Ngal(3,top_domain)
-    Ngal(3,top_domain) = Ngal(3,top_domain)-2
+    read(40,20) Ngal(3,nband)
+    Ngal(3,nband) = Ngal(3,nband)-2
     Ngal(1,nband+1) = -2
 
     ! write(6,*) "ngal:"
@@ -125,12 +125,12 @@ subroutine start(myid,status,ierr)
     ! end do
 
 
-    allocate(N(4,0:top_domain+1))
-    allocate(Ny(3,0:top_domain+1))
+    allocate(N(4,0:nband+1))
+    allocate(Ny(3,0:nband+1))
     N = Ngal
    
-    N(1,top_domain) = 2*(Ngal(1,top_domain)/3)
-    N(2,top_domain) = 2*(Ngal(2,top_domain)/3)
+    N(1,nband) = 2*(Ngal(1,nband)/3)
+    N(2,nband) = 2*(Ngal(2,nband)/3)
 
     ! write(6,*) "N:"
     ! do i = 1,4
@@ -1455,7 +1455,7 @@ subroutine ygrid
   integer j,i
   real(8) aaa,bbb,qqq,dy0,ddy,y0
 
-  nn  = N(3,top_domain)+1 !v points (as collocated points)
+  nn  = N(3,nband)+1 !v points (as collocated points)
 
   ! write(6,*) "nn", nn
 
@@ -1547,14 +1547,14 @@ subroutine ygrid
 
   ! write(6,*) "j", j, "dyu2i=", dyu2i(1,nn+1), dyu2i(2,nn+1), dyu2i(3,nn+1)
   
-  nn=N(3,top_domain)
+  nn=N(3,nband)
 
   ! N(3,top_domain)=nn
 
-  N(4,top_domain) = N(3,top_domain) + 1
+  N(4,nband) = N(3,nband) + 1
 
-  Ngal(3,top_domain) = N(3,top_domain)
-  Ngal(4,top_domain) = N(4,top_domain)
+  Ngal(3,nband) = N(3,nband)
+  Ngal(4,nband) = N(4,nband)
 
   ! write(6,*) "N:"
   ! do i = 1,4
@@ -3000,6 +3000,8 @@ subroutine proc_lims_planes(myid)
   allocate(limPL_excw(3,2,0:np-1))
   allocate(limPL_FFT(3,2,0:np-1))
   allocate(bandPL(0:np-1))
+  allocate(jmin_plane(0:np-1), jmax_plane(0:np-1))
+  allocate(proc_load(0:np-1), nplanes(0:np-1))
   ! allocate(bandPL_FFT(0:np-1))
 
   jlow = N(4,0) + 1
@@ -3010,9 +3012,6 @@ subroutine proc_lims_planes(myid)
 
   !write(6,*) "weight_tot",weight_tot, "ideal_load", ideal_load
   ! write(6,*) "weight(151)",weight(151), "weight(1)", weight(1)
-
-  allocate(jmin_plane(0:np-1), jmax_plane(0:np-1))
-  allocate(proc_load(0:np-1), nplanes(0:np-1))
 
   jmin_plane(0) = jlow
 
